@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
@@ -36,7 +37,7 @@ public class CertificateAPI {
         return new ResponseEntity<>(certificateService.getAll(), HttpStatus.OK);
     }
     @PostMapping("/save-certificate")
-    public ResponseEntity<Certificate> saveCertificate(@RequestBody CertificateDTO certificateDTO){
+    public ResponseEntity<Certificate> saveCertificate(@RequestBody CertificateDTO certificateDTO) throws MessagingException {
         Certificate certificate = new Certificate();
         certificate.setImageCertificate(certificateDTO.getImg());
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

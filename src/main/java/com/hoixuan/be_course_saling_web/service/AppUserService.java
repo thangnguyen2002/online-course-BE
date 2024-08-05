@@ -51,20 +51,20 @@ public class AppUserService implements UserDetailsService {
     }
 
     public AppUser save(AppUser appUser){
-//        try {
-//            DataMailDTO dataMail = new DataMailDTO();
-//
-//            dataMail.setTo(appUser.getEmail());
-//            dataMail.setSubject(Const.SEND_MAIL_SUBJECT.CLIENT_REGISTER);
-//
-//            Map<String, Object> props = new HashMap<>();
-//            props.put("username", appUser.getUserName());
-//            dataMail.setProps(props);
-//
-//            mailService.sendHtmlMail(dataMail, Const.TEMPLATE_FILE_NAME.CLIENT_REGISTER);
-//        } catch (MessagingException exp){
-//            exp.printStackTrace();
-//        }
+        try {
+            DataMailDTO dataMail = new DataMailDTO();
+
+            dataMail.setTo(appUser.getEmail());
+            dataMail.setSubject(Const.SEND_MAIL_SUBJECT.CLIENT_REGISTER);
+
+            Map<String, Object> props = new HashMap<>();
+            props.put("username", appUser.getUserName());
+            dataMail.setProps(props);
+
+            mailService.sendHtmlMail(dataMail, Const.TEMPLATE_FILE_NAME.CLIENT_REGISTER);
+        } catch (MessagingException exp){
+            exp.printStackTrace();
+        }
         return iAppUserRepo.save(appUser);
     }
 
