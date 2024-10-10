@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -28,6 +29,10 @@ public class UserAPI {
 
     @Autowired
     JwtService jwtService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @GetMapping("")
     public ResponseEntity<AppUser> getProfile (){
@@ -66,18 +71,34 @@ public class UserAPI {
         AppUser appUser = appUserService.findByUserName(userDetails.getUsername());
         String newPassword;
         String oldPassword = changePassword.getOldPassword();
-        if (oldPassword.equals(appUser.getPassword())) {
+//        if (oldPassword.equals(appUser.getPassword())) {
+//            if (changePassword.getNewPassword().equals(changePassword.getConfirmNewPassword())) {
+//                newPassword = changePassword.getNewPassword();
+//            } else {
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        }
+//        appUser.setPassword(newPassword);
+//        appUserService.save(appUser);
+//        return new ResponseEntity<>(appUser, HttpStatus.OK);
+
+        // So sánh mật khẩu cũ nhập vào với mật khẩu đã mã hóa trong cơ sở dữ liệu
+        if (passwordEncoder.matches(oldPassword, appUser.getPassword())) {
+            // Kiểm tra xem mật khẩu mới và xác nhận mật khẩu mới có khớp nhau hay không
             if (changePassword.getNewPassword().equals(changePassword.getConfirmNewPassword())) {
-                newPassword = changePassword.getNewPassword();
+                // Mã hóa mật khẩu mới trước khi lưu
+                newPassword = passwordEncoder.encode(changePassword.getNewPassword());
+                appUser.setPassword(newPassword);
+                appUserService.save(appUser);
+                return new ResponseEntity<>(appUser, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Mật khẩu mới và xác nhận mật khẩu không khớp
             }
         } else {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Mật khẩu cũ không đúng
         }
-        appUser.setPassword(newPassword);
-        appUserService.save(appUser);
-        return new ResponseEntity<>(appUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-account/{idUser}")

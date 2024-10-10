@@ -1,5 +1,7 @@
 use course_saling_web;
 
+ALTER TABLE app_user MODIFY COLUMN password VARCHAR(255);
+
 insert into app_user value(1,"Ha Nam","https://anhcuoiviet.vn/wp-content/uploads/2023/02/avatar-ngau-nu-3.jpg","2003-03-03","Dep trai","nghiep1409@gmail.com","Nguyen Cong Nghiep","123456","0967870785",1,"congnghiep");
 insert into app_user value(2,"Hai Phong","https://anhcuoiviet.vn/wp-content/uploads/2023/02/avatar-ngau-nu-3.jpg","1996-06-06","Xinh gai","hoithu96@gmail.com","Nguyen Thu Hoi","123456","0987654321",1,"thuhoi");
 insert into app_user value(3,"Ha Noi","https://anhcuoiviet.vn/wp-content/uploads/2023/02/avatar-ngau-nu-3.jpg","1997-06-06","Dep trai","conganh97@gmail.com","Bui Cong Anh","123456","0912345678",1,"conganh");

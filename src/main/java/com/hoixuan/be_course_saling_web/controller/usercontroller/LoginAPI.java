@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -35,6 +36,9 @@ public class LoginAPI {
 
     private String email;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
 
     @PostMapping("/login")
@@ -44,12 +48,14 @@ public class LoginAPI {
             AppUser appUser = appUserService.findByUserName(accLogin.getUserName());
 
             if (appUser.isStatus()){
-                Authentication authentication = authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(accLogin.getUserName(), accLogin.getPassword()));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                String token = jwtService.createToken(authentication);
-                AppUser appUser1 = appUserService.findByUserName(accLogin.getUserName());
-                return new UserToken(appUser1.getIdUser(), appUser1.getUserName(), token, appUser1.getRoles());
+                if (passwordEncoder.matches(accLogin.getPassword(), appUser.getPassword())) {
+                    Authentication authentication = authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(accLogin.getUserName(), accLogin.getPassword()));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    String token = jwtService.createToken(authentication);
+                    AppUser appUser1 = appUserService.findByUserName(accLogin.getUserName());
+                    return new UserToken(appUser1.getIdUser(), appUser1.getUserName(), token, appUser1.getRoles());
+                } else return null;
             } else return null;
 
         } catch (Exception e) {
@@ -68,7 +74,8 @@ public class LoginAPI {
             AppUser user = new AppUser();
             user.setUserName(signUpForm.getUserName());
             user.setEmail(signUpForm.getEmail());
-            user.setPassword(signUpForm.getPassword());
+//            user.setPassword(signUpForm.getPassword());
+            user.setPassword(passwordEncoder.encode(signUpForm.getPassword())); // Mã hóa mật khẩu
             Set<Role> roleSet = new HashSet<>();
             Role role = new Role();
             role.setId(2);

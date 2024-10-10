@@ -22,8 +22,8 @@ public class AppUser {
     @Size(max = 20,min = 6)
     @Column(unique = true)
     private String userName;
-    @Size(max = 16,min = 6)
-
+//    @Size(max = 16,min = 6)
+    @Column(length = 255)
     private String password;
     @Email
     private String email;

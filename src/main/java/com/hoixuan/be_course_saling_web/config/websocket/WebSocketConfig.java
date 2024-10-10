@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    //Xác định điểm cuối của máy chủ phía Server
+    //Xác định điểm cuối của máy chủ phía ServerF
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/socket").setAllowedOriginPatterns("http://localhost:4200").withSockJS();
